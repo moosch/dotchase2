@@ -8,7 +8,7 @@ It's a super simple game where you tap a dot that appears on screen. Once tapped
 
 - [ ] Game needs a timer countdown
 - [x] Display a red dot on the screen
-- [ ] Red dot needs to have a dynamically defined size (for each difficulty level)
+- [x] Red dot needs to have a dynamically defined size (for each difficulty level)
 - [x] Red dot needs to animate (fast) from it's current position to a new, random, position when player clicks it once
 - [ ] On a successful click, increment the player's score
 - [ ] Make 2 backgrounds. Bottom is nice gradient, above that is something...else. Both move in parallax when the dot moves -> in the same direction
@@ -18,3 +18,5 @@ It's a super simple game where you tap a dot that appears on screen. Once tapped
 You need to have [Lua](https://www.lua.org/) and [Love2D](https://love2d.org/) installed. Drop the project directory into the Love2D app and you're good to go.
 
 If you have this open in VSCode and you have the Love2D Support extension installed, just hit `Cmd + L` for mac or `Alt + L` for Windows & Linux.
+
+### Notes

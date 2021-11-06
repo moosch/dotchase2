@@ -2,7 +2,6 @@ require 'math'
 local flux = require 'libs/flux' -- https://github.com/rxi/flux/
 
 Target = {}
-
 Radiuses = {
   s = 40,
   m = 70,
@@ -15,9 +14,11 @@ Position = {
   y = love.graphics.getHeight() / 2,
 }
 
-function Target:load()
+function Target:load(difficulty)
   self.x = Position.x
   self.y = Position.y
+
+  CurrentRadius = Radiuses[Difficulty[difficulty or 'medium']]
 
   self.radius = CurrentRadius
   -- self.velocity = 200
@@ -36,7 +37,7 @@ function Target:draw()
   love.graphics.circle("fill", self.x, self.y, self.radius)
 end
 
-function Target:setNewPosition()
+function Target:move()
   Position = {
     x = math.random(CurrentRadius, love.graphics.getWidth() - CurrentRadius),
     y = math.random(CurrentRadius, love.graphics.getHeight() - CurrentRadius),
@@ -58,4 +59,17 @@ function Target:updateSize()
   flux.to(self, self.resizeAnimSpeed, {
     radius = CurrentRadius,
   }):ease("sineout")
+end
+
+-- Temp
+function Target:keypressed(key)
+  if key == 's' then
+    Target:setSize('s')
+  end
+  if key == 'm' then
+    Target:setSize('m')
+  end
+  if key == 'l' then
+    Target:setSize('l')
+  end
 end
