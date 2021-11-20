@@ -1,3 +1,4 @@
+local colors = require("tools/colors")
 local Button = require("scenes/common/ui/button")
 require("utils/utilities")
 
@@ -11,20 +12,11 @@ function TitlesScene:load()
     Events:trigger("gotoHighScores")
   end
 
-  local playBtn = Button:new(
-    (GetWidth() / 2),
-    300,
-    140,
-    40,
-    "Play",
-    handlePlay)
-  local scoresBtn = Button:new(
-    (GetWidth() / 2),
-    360,
-    140,
-    40,
-    "High Scores",
-    handleHighScores)
+  local centerY = GetHeight() / 2
+  local centerX = GetWidth() / 2
+
+  local playBtn = Button:new(centerX, centerY + 50, 140, 40, "Play", handlePlay)
+  local scoresBtn = Button:new(centerX, centerY + 100, 140, 40, "High Scores", handleHighScores)
 
   self.bgImage = love.graphics.newImage('assets/gradient_pink.jpg')
   self.bgImage:setWrap('repeat', 'clamp')
@@ -38,10 +30,16 @@ function TitlesScene:load()
 end
 
 function TitlesScene:draw()
-  -- Background
-  love.graphics.draw(self.bgImage,0,0,0,GetWidth(),GetHeight()/2)
+  local centerY = GetHeight() / 2
+  local centerX = GetWidth() / 2
 
-  love.graphics.printf(self.title, 0, 100, GetWidth(), "center")
+  -- Background
+  love.graphics.draw(self.bgImage, 0, 0, 0, GetWidth(), centerY)
+
+  love.graphics.setColor(colors.white())
+  love.graphics.circle("line", centerX, centerY - 200, 100)
+
+  love.graphics.printf(self.title, 0, centerY - 50, GetWidth(), "center")
 
   for i = 1, #self.buttons do
     self.buttons[i]:draw()

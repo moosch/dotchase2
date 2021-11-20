@@ -1,5 +1,5 @@
 local vec2 = require("utils/vec2")
-local colors = require("utils/colors")
+local colors = require("tools/colors")
 
 local Button = {}
 

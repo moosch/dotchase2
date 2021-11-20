@@ -1,5 +1,5 @@
 local Button = require("scenes/common/ui/button")
-require("utils/utilities")
+-- require("utils/utilities")
 
 local DifficultySelectionScene = {}
 
@@ -8,8 +8,8 @@ function DifficultySelectionScene:load()
     Events:trigger("setDifficulty", 'easy')
     Events:trigger("gotoGame")
   end
-  local handlePlayMedium = function()
-    Events:trigger("setDifficulty", 'medium')
+  local handlePlayModerate = function()
+    Events:trigger("setDifficulty", 'moderate')
     Events:trigger("gotoGame")
   end
   local handlePlayHard = function()
@@ -17,16 +17,22 @@ function DifficultySelectionScene:load()
     Events:trigger("gotoGame")
   end
 
-  local centerY = GetHeight() / 2
+  local handleBack = function()
+    Events:trigger("gotoTitles")
+  end
 
-  local easyBtn = Button:new((GetWidth() / 2), centerY - 50, 140, 40, "Easy", handlePlayEasy)
-  local mediumBtn = Button:new((GetWidth() / 2), centerY, 140, 40, "Medium", handlePlayMedium)
-  local hardBtn = Button:new((GetWidth() / 2), centerY + 50, 140, 40, "Hard", handlePlayHard)
+  local centerY = GetHeight() / 2
+  local centerX = GetWidth() / 2
+
+  local easyBtn = Button:new(centerX, centerY - 50, 140, 40, "Easy", handlePlayEasy)
+  local moderateBtn = Button:new(centerX, centerY, 140, 40, "Moderate", handlePlayModerate)
+  local hardBtn = Button:new(centerX, centerY + 50, 140, 40, "Hard", handlePlayHard)
+  local backBtn = Button:new(centerX, GetHeight() - 50, 140, 40, "Back", handleBack)
 
   self.bgImage = love.graphics.newImage('assets/gradient_blue.jpg')
   self.bgImage:setWrap('repeat', 'clamp')
 
-  self.buttons = { easyBtn, mediumBtn, hardBtn }
+  self.buttons = { easyBtn, moderateBtn, hardBtn, backBtn }
   self.title = "Select Difficulty"
 
   for i = 1, #self.buttons do

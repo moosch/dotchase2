@@ -1,4 +1,4 @@
-local colors = require("utils/colors")
+local colors = require("tools/colors")
 local TimeIndicator = require("scenes/gameplay/timeIndicator")
 local Target = require("scenes/gameplay/target")
 require("tools/difficulties")
@@ -64,13 +64,6 @@ function GameplayScene:draw()
     love.graphics.setColor(colors.white(0.7))
     love.graphics.rectangle("fill", 0, 0, GetWidth(), GetHeight())
 
-    -- love.graphics.setColor(colors.blue(0.7))
-    -- love.graphics.rectangle(
-    --   "fill",
-    --   (GetWidth() / 2) - 150,
-    --   (GetHeight() / 2) - 150,
-    --   300,
-    --   300)
     love.graphics.setColor(colors.black())
     love.graphics.printf("Tap the dot to play", 0, (GetHeight() / 2) - 150, GetWidth(), "center")
   end
@@ -90,6 +83,7 @@ local function pausedHandleMousepressed(self, x, y, button, istouch, presses)
     local distance = DistanceBetween(x, y, self.target.pos.x, self.target.pos.y)
     if distance < self.target.radius then
       self.state = gameState.playing
+      Events:trigger("scorePoint")
     end
   end
 end

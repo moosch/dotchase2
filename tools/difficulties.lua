@@ -3,8 +3,8 @@ Difficulties = {
     name = "Easy",
     radius = 80
   },
-  medium = {
-    name = "Medium",
+  moderate = {
+    name = "Moderate",
     radius = 50
   },
   hard = {
