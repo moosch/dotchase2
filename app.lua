@@ -1,4 +1,8 @@
-require "states/AppState"
+GameLoop = require("tools/gameLoop")
+SceneManager = require("tools/sceneManager")
+ObjectManager = require("tools/objectManager")
+-- require "states/AppState"
+-- flux = require 'libs/flux' -- https://github.com/rxi/flux/
 
 App = {}
 
@@ -12,7 +16,13 @@ function App:load()
   love.window.setTitle('Dot Chase')
   love.graphics.setBackgroundColor(125/255, 125/255, 125/255)
 
-  AppState:load()
+  GameLoop:load()
+  SceneManager:load()
+  ObjectManager:load()
+
+  -- Add initial Scene
+
+  -- AppState:load()
 end
 
 function App:resize(w, h)
@@ -27,14 +37,14 @@ function App:resize(w, h)
 end
 
 function App:draw()
-  AppState:draw()
+  -- AppState:draw()
 
   love.graphics.translate(self.x, self.y)
   love.graphics.scale(self.scale)
 end
 
 function App:update(dt)
-  AppState:update(dt)
+  -- AppState:update(dt)
 end
 
 function love.keypressed(key)
@@ -42,11 +52,11 @@ function love.keypressed(key)
     love.event.quit()
   end
 
-  AppState:keypressed(key)
+  -- AppState:keypressed(key)
 end
 
 function love.mousepressed(x, y, button, istouch, presses)
-  AppState:mousepressed(x, y, button, istouch, presses)
+  -- AppState:mousepressed(x, y, button, istouch, presses)
 end
 
 function love.resize(w, h)
