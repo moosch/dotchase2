@@ -48,6 +48,9 @@ function TitlesScene:draw()
   end
 end
 
+-- function TitlesScene:update(dt)
+-- end
+
 function TitlesScene:destroy()
   -- cleanup any Event subscribers
   Lovebird.print("🧹")

@@ -15,7 +15,7 @@ end
 ---
 ---@param textstring string # The string that the love.graphics.newText will contain
 ---@return table {text: love.Font, width: number, height: number, x: number, y: number}
-function GenerateCenteredTextTbl(textstring)
+function GenerateCenteredTextTbl(textstring, font)
   local button = {}
   button.text = love.graphics.newText(font, textstring)
   button.width = button.text:getWidth()

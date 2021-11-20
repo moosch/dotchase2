@@ -12,6 +12,9 @@ function HighScoresScene:draw()
   love.graphics.draw(self.bgImage, 0, 0, 0, GetWidth(), GetHeight()/2)
 end
 
+-- function HighScoresScene:update(dt)
+-- end
+
 function HighScoresScene:destroy()
   -- cleanup any Event subscribers
 end

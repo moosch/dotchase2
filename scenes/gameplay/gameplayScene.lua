@@ -1,4 +1,3 @@
-local vec2 = require("tools/vec2")
 local colors = require("utils/colors")
 local TimeIndicator = require("scenes/gameplay/timeIndicator")
 local Target = require("scenes/gameplay/target")
@@ -48,9 +47,6 @@ function GameplayScene:difficultyUpdated()
   if Difficulty ~= nil then
     self.target:updateTarget(nil, nil, Difficulty.radius)
   end
-  -- assert(Difficulties[difficulty] ~= nil, difficulty.." is not a valid Difficulty")
-  -- self.target:updateTarget(nil, nil, Difficulties[difficulty].radius)
-  -- self.difficulty = difficulty
 end
 
 function GameplayScene:draw()
@@ -68,25 +64,51 @@ function GameplayScene:draw()
     love.graphics.setColor(colors.white(0.7))
     love.graphics.rectangle("fill", 0, 0, GetWidth(), GetHeight())
 
-    love.graphics.setColor(colors.blue(0.7))
-    love.graphics.rectangle(
-      "fill",
-      (GetWidth() / 2) - 150,
-      (GetHeight() / 2) - 150,
-      300,
-      300)
+    -- love.graphics.setColor(colors.blue(0.7))
+    -- love.graphics.rectangle(
+    --   "fill",
+    --   (GetWidth() / 2) - 150,
+    --   (GetHeight() / 2) - 150,
+    --   300,
+    --   300)
+    love.graphics.setColor(colors.black())
+    love.graphics.printf("Tap the dot to play", 0, (GetHeight() / 2) - 150, GetWidth(), "center")
   end
 end
 
-function GameplayScene:mousepressed(x, y, button, istouch, presses)
-  -- if self.target and self.paused == false then
-  if self.target and self.state == gameState.playing then
+local function playingHandleMousepressed(self, x, y, button, istouch, presses)
+  if self.target then
     local distance = DistanceBetween(x, y, self.target.pos.x, self.target.pos.y)
     if distance < self.target.radius then
       Events:trigger("scorePoint")
     end
   end
 end
+
+local function pausedHandleMousepressed(self, x, y, button, istouch, presses)
+  if self.target then
+    local distance = DistanceBetween(x, y, self.target.pos.x, self.target.pos.y)
+    if distance < self.target.radius then
+      self.state = gameState.playing
+    end
+  end
+end
+
+local function endedHandleMousepressed(self, x, y, button, istouch, presses)
+end
+
+local gameStateMousePresses = {
+  [gameState.paused] = function(...) pausedHandleMousepressed(...) end,
+  [gameState.playing] = function(...) playingHandleMousepressed(...) end,
+  [gameState.ended] = function(...) endedHandleMousepressed(...) end
+}
+
+function GameplayScene:mousepressed(x, y, button, istouch, presses)
+  gameStateMousePresses[self.state](self, x, y, button, istouch, presses)
+end
+
+-- function GameplayScene:update(dt)
+-- end
 
 function GameplayScene:destroy()
   -- cleanup any Event subscribers

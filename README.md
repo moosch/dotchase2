@@ -26,3 +26,5 @@ It's a super simple game where you tap a dot that appears on screen. Once tapped
 You need to have [Lua](https://www.lua.org/) and [Love2D](https://love2d.org/) installed. Drop the project directory into the Love2D app and you're good to go.
 
 If you have this open in VSCode and you have the Love2D Support extension installed, just hit `Cmd + L` for mac or `Alt + L` for Windows & Linux.
+
+Debug & inspect while running by opening browser to [http://127.0.0.1:8000/](http://127.0.0.1:8000/)

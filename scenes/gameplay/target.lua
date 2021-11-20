@@ -1,5 +1,5 @@
 local flux = require("libs/flux")
-local vec2 = require("tools/vec2")
+local vec2 = require("utils/vec2")
 local colors = require("utils/colors")
 
 local Target = {}
