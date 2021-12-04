@@ -1,34 +1,29 @@
-local vec2 = require("utils/vec2")
+local vec2 = require("tools/vec2")
 local colors = require("tools/colors")
 
 local TimeIndicator = {}
 
-function TimeIndicator:new(w, h, isPaused)
+function TimeIndicator:new(w, h, callback)
+  self.paused = false
   local timeIndicator = {
+    w = w,
     size = vec2:new(w, h),
-    pasued = isPaused or true,
+    callback = callback or function() end,
   }
-
-  -- Convert to event subscribers
-  function timeIndicator:onPause()
-    self.pasued = true
-  end
-  function timeIndicator:onResume()
-    self.pasued = false
-  end
 
   function timeIndicator:update(dt)
     if (not self.paused) then
-      local w = self.size.x - 10 * dt
+      local w = self.size.x - (self.w * (0.1 * dt)) -- roughly 10 seconds
       self.size = vec2:new(w, self.size.y)
       if w <= 0 then
-        -- fire event to end game
+        self.paused = true
+        callback()
       end
     end
   end
 
   function timeIndicator:draw()
-    love.graphics.setColor(colors.white())
+    love.graphics.setColor(colors.pink())
     love.graphics.rectangle("fill", 0, 0, self.size.x, self.size.y)
   end
 

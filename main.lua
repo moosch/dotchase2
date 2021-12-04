@@ -1,7 +1,9 @@
 require("tools/difficulties")
 Keyboard = require("tools/keyboard")
+Mouse = require("tools/mouse")
 Events = require("tools/events")
 GameLoop = require("tools/gameLoop")
+Scores = require("tools/scores")
 Lovebird = require("libs/lovebird")
 SceneRenderer = require("tools/sceneRenderer")
 
@@ -16,15 +18,17 @@ GetHeight = love.graphics.getHeight
 
 function love.load()
   love.window.setTitle("Dot Chase")
-  math.randomseed(os.time())
+  _ = math.randomseed(os.time())
 
   -- love.graphics.setDefaultFilter('nearest', 'nearest')
   -- self.w, self.h, self.flags = love.window.getMode()
   -- self:resize(self.w, self.h)
 
-  local font = love.graphics.newFont("assets/font/roboto/Roboto-Light.ttf", 20)
+  local font = love.graphics.newFont("assets/font/roboto/Roboto-Light.ttf", 22)
   love.graphics.setFont(font)
 
+  Scores:load()
+  Mouse:load()
   GameLoop:load()
   Keyboard:add_love_events()
   Events:load()
@@ -35,7 +39,6 @@ function love.load()
   Events:addType("gotoHighScores")
   Events:addType("gotoDifficultySelection")
   Events:addType("setDifficulty")
-  Events:addType("difficultyUpdated")
 
   SceneRenderer:load()
   SceneRenderer:add(titlesScene, "titles")
@@ -68,8 +71,6 @@ function love.load()
 
   -- Starting scene to draw
   SceneRenderer:change("titles")
-  -- SceneRenderer:change("difficultySelection")
-  -- SceneRenderer:change("gameplay")
 end
 
 function love.draw()
@@ -83,4 +84,8 @@ function love.update(dt)
   end
   GameLoop:update(dt)
   Keyboard:update(dt)
+end
+
+function love.mousepressed(x, y, button, istouch, presses)
+  Mouse:handleMousePressed(x, y, button, istouch, presses)
 end

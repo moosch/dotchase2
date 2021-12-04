@@ -1,6 +1,6 @@
 local colors = require("tools/colors")
 local Button = require("scenes/common/ui/button")
-require("utils/utilities")
+require("tools/utilities")
 
 local TitlesScene = {}
 
@@ -21,11 +21,13 @@ function TitlesScene:load()
   self.bgImage = love.graphics.newImage('assets/gradient_pink.jpg')
   self.bgImage:setWrap('repeat', 'clamp')
 
-  self.buttons = { playBtn, scoresBtn }
+  self.buttons = {}
+  self.buttons["titles:playButton"] = playBtn
+  self.buttons["titles:scoresButton"] = scoresBtn
   self.title = "Dot Chase"
 
-  for i = 1, #self.buttons do
-    GameLoop:add(self.buttons[i])
+  for id, btn in pairs(self.buttons) do
+    GameLoop:add(id, btn)
   end
 end
 
@@ -41,19 +43,16 @@ function TitlesScene:draw()
 
   love.graphics.printf(self.title, 0, centerY - 50, GetWidth(), "center")
 
-  for i = 1, #self.buttons do
-    self.buttons[i]:draw()
+  for _id, btn in pairs(self.buttons) do
+    btn:draw()
   end
 end
 
--- function TitlesScene:update(dt)
--- end
+-- function TitlesScene:update(dt) end
 
 function TitlesScene:destroy()
-  -- cleanup any Event subscribers
-  Lovebird.print("🧹")
-  for i = 1, #self.buttons do
-    GameLoop:remove(self.buttons[i])
+  for id, _btn in pairs(self.buttons) do
+    GameLoop:remove(id)
   end
 
   self.bgImage = nil

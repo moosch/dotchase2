@@ -1,5 +1,6 @@
 --[[
-Items added/removed to GameLoop to remove the need to call :update on each item
+An abstraction to not have to call :update on all game element's in each scene.
+Just add them and remove them from this GameLoop.
 --]]
 
 local GameLoop = {}
@@ -8,26 +9,18 @@ function GameLoop:load()
   self.items = {}
 end
 
-function GameLoop:add(obj)
-  table.insert(self.items, obj)
+function GameLoop:add(id, obj)
+  assert(self.items[id] == nil, "Object "..id.." is already in GameLoop")
+  self.items[id] = obj
 end
 
--- This may become a bottleneck in complex games. Could use key/value...but that brings it's own management overhead ¯\_(ツ)_/¯
-function GameLoop:remove(obj)
-  for i = 0, #self.items do
-    if obj == self.items[i] then
-      table.remove(self.items, i)
-      break
-    end
-  end
+function GameLoop:remove(id)
+  self.items[id] = nil
 end
 
 function GameLoop:update(dt)
-  for i = 0, #self.items do
-    local obj = self.items[i]
-    if obj ~= nil then
-      obj:update(dt)
-    end
+  for _, obj in pairs(self.items) do
+    if obj ~= nil then obj:update(dt) end
   end
 end
 

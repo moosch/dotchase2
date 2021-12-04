@@ -1,4 +1,7 @@
+JSON = require("libs/JSON")
+local colors = require("tools/colors")
 local Button = require("scenes/common/ui/button")
+require("tools/difficulties")
 
 local HighScoresScene = {}
 
@@ -12,23 +15,46 @@ function HighScoresScene:load()
   self.bgImage = love.graphics.newImage('assets/gradient_blue.jpg')
   self.bgImage:setWrap('repeat', 'clamp')
 
-  GameLoop:add(self.backBtn)
+  self.scores = Scores.scores
+
+  GameLoop:add("highScores:backButton", self.backBtn)
 end
 
 function HighScoresScene:draw()
-  -- Background
-  love.graphics.draw(self.bgImage, 0, 0, 0, GetWidth(), GetHeight()/2)
+  local width = GetWidth()
+  love.graphics.draw(self.bgImage, 0, 0, 0, width, GetHeight()/2)
+
+  -- Title
+  love.graphics.setColor(colors.white())
+  love.graphics.printf("High Scores", 0, 50, width, "center")
+
+  local segmentWidth = width / 4
+
+  -- Difficulties titles and scores
+  for key, value in pairs(Difficulties) do
+    local posX = segmentWidth * value.id
+    love.graphics.setColor(colors.white())
+    love.graphics.printf(tostring(key), posX - (segmentWidth / 2), 280, segmentWidth, "center")
+
+    -- Difficulty dot
+    love.graphics.circle("fill", posX, 180, value.radius)
+
+    -- Column of high scores
+    local scores = self.scores[tostring(key)]
+    table.sort(scores, function(a, b) return a > b end)
+    for i = 1, #scores do
+      love.graphics.printf(tostring(scores[i]), posX - (segmentWidth / 2), 280 + (30*i), segmentWidth, "center")
+    end
+  end
+
 
   self.backBtn:draw()
 end
 
--- function HighScoresScene:update(dt)
--- end
+-- function HighScoresScene:update(dt) end
 
 function HighScoresScene:destroy()
-  -- cleanup any Event subscribers
-  Lovebird.print("🧹")
-  GameLoop:remove(self.backBtn)
+  GameLoop:remove("highScores:backButton")
   self.backBtn = nil
 end
 

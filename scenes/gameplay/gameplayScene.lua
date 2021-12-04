@@ -1,8 +1,9 @@
 local colors = require("tools/colors")
 local TimeIndicator = require("scenes/gameplay/timeIndicator")
 local Target = require("scenes/gameplay/target")
+local Button = require("scenes/common/ui/button")
 require("tools/difficulties")
-require("utils/utilities")
+require("tools/utilities")
 
 local GameplayScene = {}
 local gameState = {
@@ -11,27 +12,39 @@ local gameState = {
   ended = "ended"
 }
 
+local function triggerGameOver(score)
+  Events:trigger("gameOver", score)
+end
+
 function GameplayScene:load()
   Events:addType("scorePoint")
+  Events:addType("gameOver")
 
   self.score = 0
   self.state = gameState.paused
-  self.paused = true
-  self.timeIndicator = TimeIndicator:new(GetWidth(), 5)
-  self.target = Target:new(Difficulty.radius)
-
-  GameLoop:add(self.timeIndicator)
-  GameLoop:add(self.target)
 
   local function scorePoint() GameplayScene:scorePoint() end
-  local function difficultyUpdated() GameplayScene:difficultyUpdated() end
+  local function handleGameOver() GameplayScene:handleGameOver() end
+  local function handleTimeUp()
+    triggerGameOver(self.score)
+  end
+  local function resetGame() GameplayScene:resetGame() end
+  local function handleBack()
+    Events:trigger("gotoTitles")
+  end
+
+  self.timeIndicator = TimeIndicator:new(GetWidth(), 5, handleTimeUp)
+  self.target = Target:new(Difficulty.radius)
+  self.newGameBtn = Button:new(GetWidth() / 2, GetHeight() - 100, 140, 40, "Play again", resetGame)
+  self.backBtn = Button:new(GetWidth() / 2, GetHeight() - 50, 140, 40, "Back", handleBack)
+
+  GameLoop:add("gameplay:target", self.target)
 
   Events:subscribe("scorePoint", scorePoint)
-  Events:subscribe("difficultyUpdated", difficultyUpdated)
+  Events:subscribe("gameOver", handleGameOver)
 
-  function love.mousepressed(x, y, button, istouch, presses)
-    self:mousepressed(x, y, button, istouch, presses)
-  end
+  local function handleMousePressed(...) GameplayScene:mousepressed(...) end
+  Mouse:add("gameplay:handleMousePressed", handleMousePressed)
 end
 
 function GameplayScene:scorePoint()
@@ -43,29 +56,50 @@ function GameplayScene:scorePoint()
   )
 end
 
-function GameplayScene:difficultyUpdated()
-  if Difficulty ~= nil then
-    self.target:updateTarget(nil, nil, Difficulty.radius)
+function GameplayScene:handleGameOver()
+  -- TODO: Save self.score
+  -- Make it a main level module that subscribed to "gameOver" event. No need to register it here
+  -- and gameplayScene doesn't care about saving implementation
+  self.state = gameState.ended
+  Scores:save(self.score, Difficulty.slug)
+  GameLoop:add("gameplay:newGameBtn", self.newGameBtn)
+  GameLoop:add("gameplay:backBtn", self.backBtn)
+end
+
+function GameplayScene:resetGame()
+  self.score = 0
+  self.state = gameState.paused
+  GameLoop:remove("gameplay:timeIndicator")
+  GameLoop:remove("gameplay:newGameBtn")
+  GameLoop:remove("gameplay:backBtn")
+  local endGameCb = function()
+    triggerGameOver(self.score)
   end
+  self.timeIndicator = TimeIndicator:new(GetWidth(), 5, endGameCb)
 end
 
 function GameplayScene:draw()
-  -- background
   love.graphics.setBackgroundColor(colors.white())
 
   self.target:draw()
   self.timeIndicator:draw()
-
-  -- Temp
-  love.graphics.setColor(colors.black())
-  love.graphics.print(tostring(self.score), 20, 20)
 
   if self.state == gameState.paused then
     love.graphics.setColor(colors.white(0.7))
     love.graphics.rectangle("fill", 0, 0, GetWidth(), GetHeight())
 
     love.graphics.setColor(colors.black())
-    love.graphics.printf("Tap the dot to play", 0, (GetHeight() / 2) - 150, GetWidth(), "center")
+    love.graphics.printf("Tap the dot to play", 0, (GetHeight() / 2) - 50, GetWidth(), "center")
+  elseif self.state == gameState.ended then
+    love.graphics.setColor(colors.white(0.7))
+    love.graphics.rectangle("fill", 0, 0, GetWidth(), GetHeight())
+
+    love.graphics.setColor(colors.black())
+    love.graphics.printf("Well done!", 0, (GetHeight() / 2) - 50, GetWidth(), "center")
+    love.graphics.printf("You scored "..tostring(self.score), 0, (GetHeight() / 2), GetWidth(), "center")
+
+    self.newGameBtn:draw()
+    self.backBtn:draw()
   end
 end
 
@@ -83,6 +117,7 @@ local function pausedHandleMousepressed(self, x, y, button, istouch, presses)
     local distance = DistanceBetween(x, y, self.target.pos.x, self.target.pos.y)
     if distance < self.target.radius then
       self.state = gameState.playing
+      GameLoop:add("gameplay:timeIndicator", self.timeIndicator)
       Events:trigger("scorePoint")
     end
   end
@@ -101,20 +136,25 @@ function GameplayScene:mousepressed(x, y, button, istouch, presses)
   gameStateMousePresses[self.state](self, x, y, button, istouch, presses)
 end
 
--- function GameplayScene:update(dt)
--- end
+-- function GameplayScene:update(dt) end
 
 function GameplayScene:destroy()
-  -- cleanup any Event subscribers
-  Lovebird.print("🧹")
-  GameLoop:remove(self.timeIndicator)
-  GameLoop:remove(self.target)
+  GameLoop:remove("gameplay:timeIndicator")
+  GameLoop:remove("gameplay:target")
+  GameLoop:remove("gameplay:newGameBtn")
+  GameLoop:remove("gameplay:backBtn")
+
+  Events:remove("scorePoint")
+  Events:remove("gameOver")
+
+  Mouse:remove("gameplay:handleMousePressed")
 
   self.score = nil
   self.state = nil
-  self.paused = nil
   self.timeIndicator = nil
   self.target = nil
+  self.newGameBtn = nil
+  self.backBtn = nil
 end
 
 return GameplayScene

@@ -1,4 +1,4 @@
-local vec2 = require("utils/vec2")
+local vec2 = require("tools/vec2")
 local colors = require("tools/colors")
 
 local Button = {}
@@ -48,12 +48,10 @@ function Button:new(x, y, w, h, label, callback, disabled)
                         self.size.x,
                         "center")
 
-    -- Reset color
     love.graphics.setColor(r, g, b, a)
   end
 
   function button:update(dt)
-    -- love.mousepressed(x, y, button, istouch, pressed)
     x, y = love.mouse.getPosition()
     local leftClick = love.mouse.isDown(1)
     local inBounds = mouseInBounds(self.pos, self.size, x, y)

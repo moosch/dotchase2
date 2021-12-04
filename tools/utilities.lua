@@ -1,4 +1,20 @@
 ---
+---Returns a slice of a table (must be an array-like table)
+---
+---@param t table # Table to be sliced.
+---@param n1 number # Starting index of slice.
+---@param n2 number # Ending indx of slice.
+---@return table slice
+function Slice(t, n1, n2)
+  local newT = {}
+  for i = n1, n2-n1 do
+    if t[i] then table.insert(newT, t[i]) end
+  end
+  return newT
+end
+
+
+---
 ---Returns the distance between coordinate points
 ---
 ---@param x1 number # First x-axis coordinate.

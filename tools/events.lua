@@ -8,11 +8,10 @@ local function indexOf(tbl, callback)
   return -1
 end
 
-function Events:load(strict_events)
+function Events:load()
   self.handlers = {}
   self.subscribers = {}
   -- self.eventTypes = {}
-  self.strict_events = strict_events or true
 end
 
 function Events:addType(eventType)
@@ -28,9 +27,8 @@ end
 
 function Events:subscribe(eventType, callback)
   assert(type(callback) == "function", "Callback must be a function")
-  if self.strict_events then
-    assert(self.handlers[eventType] ~= nil, "Event type "..eventType.." does not exist")
-  end
+  assert(self.handlers[eventType] ~= nil, "Event type "..eventType.." does not exist")
+
   local tbl = self.handlers[eventType]
   if tbl == nil then
     self.addType(eventType)
@@ -61,13 +59,13 @@ function Events:trigger(eventType, ...)
   end
 end
 
-function Events:clear(eventType)
+function Events:remove(eventType)
   assert(eventType ~= nil, "eventType is required")
   assert(self.handlers[eventType] ~= nil, "Event "..eventType.." does not exist")
   self.handlers[eventType] = {}
 end
 
-function Events:clearAll()
+function Events:removeAll()
   self.handlers = {}
 end
 

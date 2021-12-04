@@ -1,5 +1,4 @@
 local Button = require("scenes/common/ui/button")
--- require("utils/utilities")
 
 local DifficultySelectionScene = {}
 
@@ -32,33 +31,33 @@ function DifficultySelectionScene:load()
   self.bgImage = love.graphics.newImage('assets/gradient_blue.jpg')
   self.bgImage:setWrap('repeat', 'clamp')
 
-  self.buttons = { easyBtn, moderateBtn, hardBtn, backBtn }
+  self.buttons = {}
+  self.buttons["difficultySelection:easyButton"] = easyBtn
+  self.buttons["difficultySelection:moderateButton"] = moderateBtn
+  self.buttons["difficultySelection:hardButton"] = hardBtn
+  self.buttons["difficultySelection:backButton"] = backBtn
   self.title = "Select Difficulty"
 
-  for i = 1, #self.buttons do
-    GameLoop:add(self.buttons[i])
+  for id, btn in pairs(self.buttons) do
+    GameLoop:add(id, btn)
   end
 end
 
--- function DifficultySelectionScene:update(dt)
--- end
+-- function DifficultySelectionScene:update(dt) end
 
 function DifficultySelectionScene:draw()
-  -- Background
   love.graphics.draw(self.bgImage, 0, 0, 0, GetWidth(), GetHeight() / 2)
 
   love.graphics.printf(self.title, 0, (GetHeight() / 2) - 150, GetWidth(), "center")
 
-  for i = 1, #self.buttons do
-    self.buttons[i]:draw()
+  for _, btn in pairs(self.buttons) do
+    btn:draw()
   end
 end
 
 function DifficultySelectionScene:destroy()
-  -- cleanup any Event subscribers
-  Lovebird.print("🧹")
-  for i = 1, #self.buttons do
-    GameLoop:remove(self.buttons[i])
+  for id, _btn in pairs(self.buttons) do
+    GameLoop:remove(id)
   end
   self.buttons = nil
   self.bgImage = nil
