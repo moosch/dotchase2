@@ -1,8 +1,10 @@
 function love.conf(t)
-  t.title = "Dot Chase"       -- The title the window will have (string)
-  t.version = "11.3"     -- The LOVE version the game is made for (string)
-  t.console = true       -- Attach a console (boolean - Windows only)
-  t.window.width = 700  -- The window width
-  t.window.height = 700  -- The window height
-  t.window.vsync = 0     -- Disable vsync
+  t.title = "Dot Chase"
+  t.version = "11.3"
+  t.console = true
+  t.window.width = 400
+  t.window.height = 700
+  t.window.vsync = true
+  t.window.highdpi = true
+  t.window.resizable = false
 end

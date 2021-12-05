@@ -3,18 +3,18 @@ Difficulties = {
     id = 1,
     name = "Easy",
     slug = "easy",
-    radius = 80
+    radius = 50
   },
   moderate = {
     id = 2,
     name = "Moderate",
     slug = "moderate",
-    radius = 50
+    radius = 35
   },
   hard = {
     id = 3,
     name = "Hard",
     slug = "hard",
-    radius = 35
+    radius = 20
   }
 }

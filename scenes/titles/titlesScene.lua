@@ -1,6 +1,31 @@
 local colors = require("tools/colors")
 local Button = require("scenes/common/ui/button")
+local vec2 = require("tools/vec2")
 require("tools/utilities")
+
+local Dot = {}
+function Dot:new()
+  local dot = {
+    pos = vec2:new(GetWidth() / 2, GetHeight() / 2 - 200),
+    centerX = GetWidth() / 2,
+    radius = 20,
+    elapsedTime = 0,
+  }
+  function dot:draw()
+    love.graphics.setColor(colors.white())
+    love.graphics.circle("fill", self.pos.x, self.pos.y, self.radius)
+  end
+
+  function dot:update(dt)
+    -- This was very helpful https://yunhan.li/unity/2017/12/19/math-wave.html
+    local amp = 50
+    local speed = 2
+    self.pos.x = amp * math.sin(speed * self.elapsedTime) + self.centerX
+    self.elapsedTime = self.elapsedTime + dt
+  end
+
+  return dot
+end
 
 local TitlesScene = {}
 
@@ -26,6 +51,9 @@ function TitlesScene:load()
   self.buttons["titles:scoresButton"] = scoresBtn
   self.title = "Dot Chase"
 
+  self.dot = Dot:new()
+  GameLoop:add("dot", self.dot)
+
   for id, btn in pairs(self.buttons) do
     GameLoop:add(id, btn)
   end
@@ -43,6 +71,8 @@ function TitlesScene:draw()
 
   love.graphics.printf(self.title, 0, centerY - 50, GetWidth(), "center")
 
+  self.dot:draw()
+
   for _id, btn in pairs(self.buttons) do
     btn:draw()
   end
@@ -54,6 +84,9 @@ function TitlesScene:destroy()
   for id, _btn in pairs(self.buttons) do
     GameLoop:remove(id)
   end
+
+  GameLoop:remove("dot")
+  self.dot  = nil
 
   self.bgImage = nil
   self.buttons = nil

@@ -34,16 +34,16 @@ function HighScoresScene:draw()
   for key, value in pairs(Difficulties) do
     local posX = segmentWidth * value.id
     love.graphics.setColor(colors.white())
-    love.graphics.printf(tostring(key), posX - (segmentWidth / 2), 280, segmentWidth, "center")
+    love.graphics.printf(tostring(key), posX - (segmentWidth / 2), 200, segmentWidth, "center")
 
     -- Difficulty dot
-    love.graphics.circle("fill", posX, 180, value.radius)
+    love.graphics.circle("fill", posX, 140, value.radius)
 
     -- Column of high scores
     local scores = self.scores[tostring(key)]
     table.sort(scores, function(a, b) return a > b end)
     for i = 1, #scores do
-      love.graphics.printf(tostring(scores[i]), posX - (segmentWidth / 2), 280 + (30*i), segmentWidth, "center")
+      love.graphics.printf(tostring(scores[i]), posX - (segmentWidth / 2), 200 + (30*i), segmentWidth, "center")
     end
   end
 

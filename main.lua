@@ -17,7 +17,6 @@ GetWidth = love.graphics.getWidth
 GetHeight = love.graphics.getHeight
 
 function love.load()
-  love.window.setTitle("Dot Chase")
   _ = math.randomseed(os.time())
 
   -- love.graphics.setDefaultFilter('nearest', 'nearest')
